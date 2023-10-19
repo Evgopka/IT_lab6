@@ -2,8 +2,8 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLineEdit, QHBoxLayout, QVBoxLayout, QPushButton
 
 class Calculator(QWidget):
-    def __init__(self):
-        super(Calculator, self).__init__()
+    def init(self):
+        super(Calculator, self).init()
         self.vbox = QVBoxLayout(self)
         self.hbox_input = QHBoxLayout()
         self.hbox_first = QHBoxLayout()
@@ -77,10 +77,10 @@ class Calculator(QWidget):
         self.b_minus.clicked.connect(lambda: self._operation("-"))
         self.b_delenie.clicked.connect(lambda: self._operation("/"))
         self.b_umnojenie.clicked.connect(lambda: self._operation("*"))
-        self.b_tockha.clicked.connect(self._tockha)
+        self.b_tockha.clicked.connect(lambda: self._button("."))
+        #self.b_tockha.clicked.connect(self._tockha)
         self.b_result.clicked.connect(self._result)
         self.b_clear.clicked.connect(self._clear)
-
         self.b_1.clicked.connect(lambda: self._button("1"))
         self.b_2.clicked.connect(lambda: self._button("2"))
         self.b_3.clicked.connect(lambda: self._button("3"))
@@ -95,11 +95,11 @@ class Calculator(QWidget):
         line = self.input.text()
         self.input.setText(line + param)
     def _operation(self, op):
-        self.num_1 = int(self.input.text())
+        self.num_1 = float(self.input.text())
         self.op = op
         self.input.setText("")
     def _result(self):
-        self.num_2 = int(self.input.text())
+        self.num_2 = float(self.input.text())
         if self.op == "+":
             self.input.setText(str(self.num_1 + self.num_2))
         if self.op == "-":
@@ -115,9 +115,14 @@ class Calculator(QWidget):
     def _clear(self):                                                                # !!!
         self.input.clear()
 
-    def _tockha(self):
-        num_1 = self.label.num_1()
-        self.label.setText(num_1 + ".")
+    def _button(self, param):
+        line = self.input.text()
+        if line.count('.') > 0 and param == '.':
+            self.input.setText(line.lstrip('0'))
+        elif line.count('0') > 0:
+            self.input.setText((line.lstrip('0') + param))
+        else:
+            self.input.setText((line + param).lstrip('0'))
 
 app = QApplication(sys.argv)
 
